@@ -8,10 +8,16 @@ body {
     height: 100vh;
 }
 
-.map-container,
-.news-container {
-    width: 50%;
+.map-container {
+    width: 66.6667%; /* 2/3 of the horizontal space */
     height: 100%;
+}
+
+.news-container {
+    width: 33.3333%; /* 1/3 of the horizontal space */
+    height: 100%;
+    overflow-y: auto;
+    padding: 10px;
 }
 
 #map {
@@ -19,7 +25,6 @@ body {
 }
 
 #news {
-    padding: 10px;
     overflow-y: auto;
 }
 
