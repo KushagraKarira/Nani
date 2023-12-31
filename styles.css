@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.map-container,
+.news-container {
+    width: 50%;
+    height: 100%;
+}
+
+#map {
+    height: 100%;
+}
+
+#news {
+    padding: 10px;
+    overflow-y: auto;
+}
+
