@@ -1,45 +1,26 @@
-$(document).ready(function () {
-    // Initialize Leaflet map
-    var map = L.map('map').setView([0, 0], 2);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+fetch('news-data.csv')
+  .then(response => response.text())
+  .then(data => {
+    const csvData = Papa.parse(data, { header: true });
 
-    // Load CSV data and process
-    $.ajax({
-        type: "GET",
-        url: "data.csv",
-        dataType: "text",
-        success: function (data) {
-            processData(data);
-        }
+    // Create Leaflet map
+    const map = L.map('map').setView([37.09024, -95.712891], 8); // Adjust initial center as needed
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add markers
+    csvData.forEach(row => {
+      L.marker([row.latitude, row.longitude])
+        .addTo(map)
+        .on('click', () => {
+          // Display news content
+          document.getElementById('news-content').innerHTML = `
+            <h2>${row.time}</h2>
+            <p>${row.location}</p>
+            <p>${row.content}</p>
+          `;
+        });
     });
-
-    function processData(allText) {
-        var allTextLines = allText.split('\n');
-        var headers = allTextLines[0].split('\t');
-
-        for (var i = 1; i < allTextLines.length; i++) {
-            var data = allTextLines[i].split('\t');
-            if (data.length === headers.length) {
-                createMarker(data);
-                createNewsEntry(data, headers);
-            }
-        }
-    }
-
-    function createMarker(data) {
-        var location = [parseFloat(data[1]), parseFloat(data[2])];
-        L.marker(location).addTo(map)
-            .bindPopup(`<b>${data[4]}</b><br>${data[3]}`);
-    }
-
-    function createNewsEntry(data, headers) {
-        var newsEntry = `<div class="news-item">
-                            <h3>${data[2]}</h3>
-                            <p><strong>${headers[2]}:</strong> ${data[2]}</p>
-                            <p><strong>${headers[4]}:</strong> ${data[4]}</p>
-                            <p><strong>${headers[5]}:</strong> ${data[5]}</p>
-                         </div>`;
-        $('#news').append(newsEntry);
-    }
-});
+  });
 
